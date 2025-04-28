@@ -6,11 +6,11 @@ Sub CalculatePremiums()
     Dim rankCounts(1 To 6) As Long, currentRank As Integer, cumulative As Long
     Dim totalAssigned As Long, overflow As Long
 
-    Set wsSource = ThisWorkbook.Worksheets("Ïðåìèÿ")
+    Set wsSource = ThisWorkbook.Worksheets("Премия")
     lastRow = wsSource.Cells(wsSource.Rows.Count, "A").End(xlUp).Row
 
     If lastRow < 2 Then
-        MsgBox "Íåò äàííûõ äëÿ îáðàáîòêè", vbExclamation
+        MsgBox "Нет данных для обработки", vbExclamation
         Exit Sub
     End If
 
@@ -32,7 +32,7 @@ Sub CalculatePremiums()
     Application.ScreenUpdating = False
     Set wsDest = Worksheets.Add(After:=Worksheets(Worksheets.Count))
     wsDest.Name = "TempSort"
-    wsDest.Range("A1:F1").Value = Array("Ðàíã", "Ëîãèí", "Âåñ C", "Âåñ D", "Âåñ E", "Èòîã")
+    wsDest.Range("A1:F1").Value = Array("Ранг", "Логин", "Вес C", "Вес D", "Вес E", "Итог")
     wsDest.Range("A2").Resize(totalOperators, 6).Value = resultArr
 
     With wsDest.Sort
@@ -82,10 +82,10 @@ Sub CalculatePremiums()
     Next i
 
     Set wsDest = Worksheets.Add(After:=Worksheets(Worksheets.Count))
-    wsDest.Name = "Ðåçóëüòàòû"
-    wsDest.Range("A1:F1").Value = Array("Ðàíã", "Ëîãèí", "Âåñ ñäåëêè", "Âåñ CSAT", "Âåñ QQ", "Èòîãîâûé áàëë")
+    wsDest.Name = "Результаты"
+    wsDest.Range("A1:F1").Value = Array("Ранг", "Логин", "Вес сделки", "Вес CSAT", "Вес QQ", "Итоговый балл")
     wsDest.Range("A2").Resize(totalOperators, 6).Value = resultArr
     wsDest.Columns.AutoFit
 
-    MsgBox "Ãîòîâî! Ðåçóëüòàòû íà ëèñòå '" & wsDest.Name & "'", vbInformation
+    MsgBox "Готово! Результаты на листе '" & wsDest.Name & "'", vbInformation
 End Sub
