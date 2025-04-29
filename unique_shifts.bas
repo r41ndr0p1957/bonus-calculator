@@ -1,4 +1,3 @@
-
 Sub CalculateShiftHours()
     Dim wsSource As Worksheet, wsResult As Worksheet
     Dim lastRow As Long, i As Long
@@ -7,42 +6,42 @@ Sub CalculateShiftHours()
     Dim startDateTime As Date, endDateTime As Date
     Dim totalHours As Double
     
-    ' Ñîçäàåì êîëëåêöèþ äëÿ õðàíåíèÿ äàííûõ (ëîãèí + äàòà -> ñóììà ÷àñîâ)
+    ' Создаем коллекцию для хранения данных (логин + дата -> сумма часов)
     Set dict = CreateObject("Scripting.Dictionary")
     
-    ' Îïðåäåëåíèå ðàáî÷èõ ëèñòîâ
-    Set wsSource = ThisWorkbook.Sheets("Çàäàíèå 1") ' Òóò íàçâàíèå èñõîäíîãî ëèñòà
+    ' Определение рабочих листов
+    Set wsSource = ThisWorkbook.Sheets("Задание 1") ' Тут название исходного листа
     On Error Resume Next
     Application.DisplayAlerts = False
-    ThisWorkbook.Sheets("Ðåçóëüòàò").Delete
+    ThisWorkbook.Sheets("Результат").Delete
     Application.DisplayAlerts = True
     Set wsResult = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
-    wsResult.Name = "Çàäàíèå 1.1"
+    wsResult.Name = "Задание 1.1"
     
-    ' Íàõîäèì ïîñëåäíþþ çàïîëíåííóþ ñòðîêó â èñõîäíîì ëèñòå
+    ' Находим последнюю заполненную строку в исходном листе
     lastRow = wsSource.Cells(wsSource.Rows.Count, "G").End(xlUp).Row
     
-    ' Ïðîõîäèì ïî âñåì ñòðîêàì, ïðîïóñêàåì ñòðîêó 1 (çàãîëîâîê), ñîáèðàåì äàííûå
+    ' Проходим по всем строкам, пропускаем строку 1 (заголовок), собираем данные
     For i = 2 To lastRow
         login = wsSource.Cells(i, "G").Value
         shiftType = wsSource.Cells(i, "V").Value
         shiftDate = wsSource.Cells(i, "W").Value
         
-        ' Ïðîâåðêà òèïà ñìåíû
-        If shiftType = "Ñìåíà. Îñíîâíàÿ" Or shiftType = "Ñìåíà. Äîï" Or _
-           shiftType = "Ñìåíà. Îòðàáîòêà" Or shiftType = "Ñåãìåíò ñìåíû" Then
+        ' Проверка типа смены
+        If shiftType = "Смена. Основная" Or shiftType = "Смена. Доп" Or _
+           shiftType = "Смена. Отработка" Or shiftType = "Сегмент смены" Then
             
-            ' Ñòàðò + êîíåö
+            ' Старт + конец
             startDateTime = wsSource.Cells(i, "W").Value + wsSource.Cells(i, "X").Value
             endDateTime = wsSource.Cells(i, "Y").Value + wsSource.Cells(i, "Z").Value
             
-            ' Ñ÷èòàåì ÷àñèêè
+            ' Считаем часики
             totalHours = (endDateTime - startDateTime) * 24
             
-            ' Êëþ÷ (ëîãèí + äàòà)
+            ' Ключ (логин + дата)
             key = login & "|" & shiftDate
             
-            ' Äîáàâëÿåì â êîëëåêöèþ
+            ' Добавляем в коллекцию
             If dict.Exists(key) Then
                 dict(key) = dict(key) + totalHours
             Else
@@ -51,17 +50,17 @@ Sub CalculateShiftHours()
         End If
     Next i
     
-    ' Âûâîäèì ðåçóëüòàò â íîâûé ëèñò
+    ' Выводим результат в новый лист
     With wsResult
-        ' Çàãîëîâêè ñòîëáöîâ
-        .Cells(1, 1).Value = "Ëîãèí"
-        .Cells(1, 2).Value = "Äàòà"
-        .Cells(1, 3).Value = "Ñóììà ÷àñîâ"
+        ' Заголовки столбцов
+        .Cells(1, 1).Value = "Логин"
+        .Cells(1, 2).Value = "Дата"
+        .Cells(1, 3).Value = "Сумма часов"
         
-        ' Çàïîëíÿåì äàííûå
+        ' Заполняем данные
         Dim rowIndex As Long
         rowIndex = 2
-        For Each key In dict.Keys ' Òåïåðü key îáúÿâëåí êàê Variant
+        For Each key In dict.Keys ' Теперь key объявлен как Variant
             login = Split(key, "|")(0)
             shiftDate = Split(key, "|")(1)
             .Cells(rowIndex, 1).Value = login
@@ -70,14 +69,14 @@ Sub CalculateShiftHours()
             rowIndex = rowIndex + 1
         Next key
         
-        ' Ôîðìàòèðóåì äàòó è ÷èñëà
+        ' Форматируем дату и числа
         .Columns("B:B").NumberFormat = "dd.mm.yyyy"
         .Columns("C:C").NumberFormat = "0.00"
         
-        ' Àâòîïîäáîð âûñîòû ñòîëáöîâ
+        ' Автоподбор высоты столбцов
         .Columns("A:C").AutoFit
     End With
     
-    MsgBox "Îáðàáîòêà çàâåðøåíà! Ðåçóëüòàò â ëèñòå 'Ðåçóëüòàò'."
+    MsgBox "Обработка завершена! Результат в листе 'Результат'."
 End Sub
 
