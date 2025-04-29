@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module1"
+
 Sub CalculateShiftHours()
     Dim wsSource As Worksheet, wsResult As Worksheet
     Dim lastRow As Long, i As Long
@@ -7,42 +7,42 @@ Sub CalculateShiftHours()
     Dim startDateTime As Date, endDateTime As Date
     Dim totalHours As Double
     
-    ' Создаем коллекцию для хранения данных (логин + дата -> сумма часов)
+    ' Г‘Г®Г§Г¤Г ГҐГ¬ ГЄГ®Г«Г«ГҐГЄГ¶ГЁГѕ Г¤Г«Гї ГµГ°Г Г­ГҐГ­ГЁГї Г¤Г Г­Г­Г»Гµ (Г«Г®ГЈГЁГ­ + Г¤Г ГІГ  -> Г±ГіГ¬Г¬Г  Г·Г Г±Г®Гў)
     Set dict = CreateObject("Scripting.Dictionary")
     
-    ' Определение рабочих листов
-    Set wsSource = ThisWorkbook.Sheets("Задание 1") ' Тут название исходного листа
+    ' ГЋГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГҐ Г°Г ГЎГ®Г·ГЁГµ Г«ГЁГ±ГІГ®Гў
+    Set wsSource = ThisWorkbook.Sheets("Г‡Г Г¤Г Г­ГЁГҐ 1") ' Г’ГіГІ Г­Г Г§ГўГ Г­ГЁГҐ ГЁГ±ГµГ®Г¤Г­Г®ГЈГ® Г«ГЁГ±ГІГ 
     On Error Resume Next
     Application.DisplayAlerts = False
-    ThisWorkbook.Sheets("Результат").Delete
+    ThisWorkbook.Sheets("ГђГҐГ§ГіГ«ГјГІГ ГІ").Delete
     Application.DisplayAlerts = True
     Set wsResult = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
-    wsResult.Name = "Задание 1.1"
+    wsResult.Name = "Г‡Г Г¤Г Г­ГЁГҐ 1.1"
     
-    ' Находим последнюю заполненную строку в исходном листе
+    ' ГЌГ ГµГ®Г¤ГЁГ¬ ГЇГ®Г±Г«ГҐГ¤Г­ГѕГѕ Г§Г ГЇГ®Г«Г­ГҐГ­Г­ГіГѕ Г±ГІГ°Г®ГЄГі Гў ГЁГ±ГµГ®Г¤Г­Г®Г¬ Г«ГЁГ±ГІГҐ
     lastRow = wsSource.Cells(wsSource.Rows.Count, "G").End(xlUp).Row
     
-    ' Проходим по всем строкам, пропускаем строку 1 (заголовок), собираем данные
+    ' ГЏГ°Г®ГµГ®Г¤ГЁГ¬ ГЇГ® ГўГ±ГҐГ¬ Г±ГІГ°Г®ГЄГ Г¬, ГЇГ°Г®ГЇГіГ±ГЄГ ГҐГ¬ Г±ГІГ°Г®ГЄГі 1 (Г§Г ГЈГ®Г«Г®ГўГ®ГЄ), Г±Г®ГЎГЁГ°Г ГҐГ¬ Г¤Г Г­Г­Г»ГҐ
     For i = 2 To lastRow
         login = wsSource.Cells(i, "G").Value
         shiftType = wsSource.Cells(i, "V").Value
         shiftDate = wsSource.Cells(i, "W").Value
         
-        ' Проверка типа смены
-        If shiftType = "Смена. Основная" Or shiftType = "Смена. Доп" Or _
-           shiftType = "Смена. Отработка" Or shiftType = "Сегмент смены" Then
+        ' ГЏГ°Г®ГўГҐГ°ГЄГ  ГІГЁГЇГ  Г±Г¬ГҐГ­Г»
+        If shiftType = "Г‘Г¬ГҐГ­Г . ГЋГ±Г­Г®ГўГ­Г Гї" Or shiftType = "Г‘Г¬ГҐГ­Г . Г„Г®ГЇ" Or _
+           shiftType = "Г‘Г¬ГҐГ­Г . ГЋГІГ°Г ГЎГ®ГІГЄГ " Or shiftType = "Г‘ГҐГЈГ¬ГҐГ­ГІ Г±Г¬ГҐГ­Г»" Then
             
-            ' Старт + конец
+            ' Г‘ГІГ Г°ГІ + ГЄГ®Г­ГҐГ¶
             startDateTime = wsSource.Cells(i, "W").Value + wsSource.Cells(i, "X").Value
             endDateTime = wsSource.Cells(i, "Y").Value + wsSource.Cells(i, "Z").Value
             
-            ' Считаем часики
+            ' Г‘Г·ГЁГІГ ГҐГ¬ Г·Г Г±ГЁГЄГЁ
             totalHours = (endDateTime - startDateTime) * 24
             
-            ' Ключ (логин + дата)
+            ' ГЉГ«ГѕГ· (Г«Г®ГЈГЁГ­ + Г¤Г ГІГ )
             key = login & "|" & shiftDate
             
-            ' Добавляем в коллекцию
+            ' Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Гў ГЄГ®Г«Г«ГҐГЄГ¶ГЁГѕ
             If dict.Exists(key) Then
                 dict(key) = dict(key) + totalHours
             Else
@@ -51,17 +51,17 @@ Sub CalculateShiftHours()
         End If
     Next i
     
-    ' Выводим результат в новый лист
+    ' Г‚Г»ГўГ®Г¤ГЁГ¬ Г°ГҐГ§ГіГ«ГјГІГ ГІ Гў Г­Г®ГўГ»Г© Г«ГЁГ±ГІ
     With wsResult
-        ' Заголовки столбцов
-        .Cells(1, 1).Value = "Логин"
-        .Cells(1, 2).Value = "Дата"
-        .Cells(1, 3).Value = "Сумма часов"
+        ' Г‡Г ГЈГ®Г«Г®ГўГЄГЁ Г±ГІГ®Г«ГЎГ¶Г®Гў
+        .Cells(1, 1).Value = "Г‹Г®ГЈГЁГ­"
+        .Cells(1, 2).Value = "Г„Г ГІГ "
+        .Cells(1, 3).Value = "Г‘ГіГ¬Г¬Г  Г·Г Г±Г®Гў"
         
-        ' Заполняем данные
+        ' Г‡Г ГЇГ®Г«Г­ГїГҐГ¬ Г¤Г Г­Г­Г»ГҐ
         Dim rowIndex As Long
         rowIndex = 2
-        For Each key In dict.Keys ' Теперь key объявлен как Variant
+        For Each key In dict.Keys ' Г’ГҐГЇГҐГ°Гј key Г®ГЎГєГїГўГ«ГҐГ­ ГЄГ ГЄ Variant
             login = Split(key, "|")(0)
             shiftDate = Split(key, "|")(1)
             .Cells(rowIndex, 1).Value = login
@@ -70,14 +70,14 @@ Sub CalculateShiftHours()
             rowIndex = rowIndex + 1
         Next key
         
-        ' Форматируем дату и числа
+        ' Г”Г®Г°Г¬Г ГІГЁГ°ГіГҐГ¬ Г¤Г ГІГі ГЁ Г·ГЁГ±Г«Г 
         .Columns("B:B").NumberFormat = "dd.mm.yyyy"
         .Columns("C:C").NumberFormat = "0.00"
         
-        ' Автоподбор высоты столбцов
+        ' ГЂГўГІГ®ГЇГ®Г¤ГЎГ®Г° ГўГ»Г±Г®ГІГ» Г±ГІГ®Г«ГЎГ¶Г®Гў
         .Columns("A:C").AutoFit
     End With
     
-    MsgBox "Обработка завершена! Результат в листе 'Результат'."
+    MsgBox "ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г§Г ГўГҐГ°ГёГҐГ­Г ! ГђГҐГ§ГіГ«ГјГІГ ГІ Гў Г«ГЁГ±ГІГҐ 'ГђГҐГ§ГіГ«ГјГІГ ГІ'."
 End Sub
 
